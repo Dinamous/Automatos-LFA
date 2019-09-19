@@ -17,8 +17,14 @@ public class Automatos {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         AFD afd1 = new AFD();
         AFD afd2 = new AFD();
+        AFD afnd = new AFD();
         int operacao=0;
+        ArrayList<String> fech = new ArrayList();
+        
         Ler_Arquivo(afd1,afd2,operacao);//função para ler arquivos.
+        Operacao(operacao,afd1,afd2);
+        
+        Fecho(afd1,afd2,fech);
         
     }
 
@@ -36,14 +42,70 @@ public class Automatos {
        
        while(!"$".equals(Linha)){//enquanto a leitura do automato não acabou
                     
-           operacao = Integer.parseInt(Linha);//lenda a primeria linha do arquivo - a operaçao
+           operacao = Integer.parseInt(Linha);//lendo a primeria linha do arquivo - a operaçao
            System.out.println("operação: "+operacao);
            Linha = leitor.readLine();
            
            //Estados
            vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
            aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-           afd1.setEstados(aux);//recebe o array
+           afd1.estados = aux;//recebe o array
+           
+           System.out.println("Estados: "+Arrays.toString(vetor_de_item));
+           Linha = leitor.readLine();//ler a próxima linha 
+                  
+           //Alfabeto
+           vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os elementos do alfabeto
+           aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
+           afd1.alfabeto = aux;//recebe o array
+           System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));
+           Linha = leitor.readLine();
+          
+           System.out.println("Transições:");
+           
+           while(!Linha.contains(">")){
+               //q0,0,q1
+               vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os estados
+               
+               for(String item : vetor_de_item){
+                   auxx = new Transicao();//gerando novo endereço de memoria
+                   auxx.Est_Origem = vetor_de_item[0];
+                   auxx.Simbolo = vetor_de_item[1]; //simbolo = alfabeto
+                   auxx.Est_Destino = vetor_de_item[2];
+                   //Exemplo: |q0|0|q1|
+                   aux_trans.add(auxx);
+                }
+               
+               System.out.println("\t"+auxx.Est_Origem+","+auxx.Simbolo+","+auxx.Est_Destino);
+               afd1.transicao = aux_trans;
+               Linha = leitor.readLine();
+           }
+           
+           //Estado Inicial
+           est = Linha.replace(">", "");//removendo o sinal de >
+           afd1.estInicial =est;//recebe o array
+           System.out.println("Estado inicial: "+est);
+           Linha = leitor.readLine();
+           
+           //Estado Final
+           est = Linha.replace("*", "");//removendo o sinal de *
+           vetor_de_item = est.split(",");
+           aux.addAll(Arrays.asList(vetor_de_item));
+           afd1.estFinal = aux;//recebe o array
+           System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
+           Linha = leitor.readLine();
+           
+           
+       }// fim do while
+       //=================================================================================================================
+       //Leitura do arquivo para o 2° AFD
+       
+       Linha = leitor.readLine();
+           
+       //Estados
+           vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
+           aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
+           afd2.estados = aux;//recebe o array
            
            System.out.println("Estados: "+Arrays.toString(vetor_de_item));
            Linha = leitor.readLine();//ler a próxima linha 
@@ -51,7 +113,7 @@ public class Automatos {
            //Alfabeto
            vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
            aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-           afd1.setAlfabeto(aux);//recebe o array
+           afd2.alfabeto = aux;//recebe o array
            System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));
            Linha = leitor.readLine();
           
@@ -71,13 +133,13 @@ public class Automatos {
                 }
                
                System.out.println("\t"+auxx.Est_Origem+","+auxx.Simbolo+","+auxx.Est_Destino);
-               afd1.setTransicao(aux_trans);
+               afd2.transicao = aux_trans;
                Linha = leitor.readLine();
            }
            
            //Estado Inicial
            est = Linha.replace(">", "");//removendo o sinal de >
-           afd1.setEstInicial(est);//recebe o array
+           afd2.estInicial =est;//recebe o array
            System.out.println("estado inicial: "+est);
            Linha = leitor.readLine();
            
@@ -85,64 +147,34 @@ public class Automatos {
            est = Linha.replace("*", "");//removendo o sinal de *
            vetor_de_item = est.split(",");
            aux.addAll(Arrays.asList(vetor_de_item));
-           afd1.setEstFinal(aux);//recebe o array
+           afd2.estFinal = aux;//recebe o array
            System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
-           Linha = leitor.readLine();
            
-           
-       }// fim do while
-       //=================================================================================================================
-       //Leitura do arquivo para o 2° AFD
-       
-       Linha = leitor.readLine();
-           
-           //Estados
-           vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
-           aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-           afd2.setEstados(aux);//recebe o array
-           
-           System.out.println("\n\nEstados: "+Arrays.toString(vetor_de_item));
-           Linha = leitor.readLine();
-                  
-           //Alfabeto
-           vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
-           aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-           afd2.setAlfabeto(aux);//recebe o array
-           System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));
-           Linha = leitor.readLine();
-          
-           System.out.println("Estados:");
-           while(!Linha.contains(">")){
-               //q0,0,q1
-               vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
-               for(String item : vetor_de_item){
-                   auxx = new Transicao();//gerando novo endereço de memoria
-                   auxx.Est_Origem= vetor_de_item[0];
-                   auxx.Simbolo = vetor_de_item[1];
-                   auxx.Est_Destino = vetor_de_item[2];
-                   aux_trans.add(auxx);
-                   
-               }
-               System.out.println("\t"+auxx.Est_Origem+","+auxx.Simbolo+","+auxx.Est_Destino);
-               afd2.setTransicao(aux_trans);
-               Linha = leitor.readLine();
-           }
-           
-           //Estado Inicial
-            est = Linha.replace(">", "");//removendo o sinal de >
-           afd2.setEstInicial(est);//recebe o array
-           System.out.println("estado inicial: "+est);
-           Linha = leitor.readLine();
-           
-           //Estado Final
-           est = Linha.replace("*", "");//removendo o sinal de *
-           vetor_de_item = est.split(",");
-           aux.addAll(Arrays.asList(vetor_de_item));
-           afd2.setEstFinal(aux);//recebe o array
-          System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
-           Linha = leitor.readLine();
-           
-           
+                 
        }
    
+    public static void Fecho(AFD afd1,AFD afd2,ArrayList<String> fech){
+        
+        fech.addAll(afd1.estados);
+        
+        
+        
+    }
+    
+    public static void Operacao(int operacao,AFD afd1,AFD afd2){
+        
+        switch(operacao){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;    
+               
+        }
+        
+    }
+    
 }
