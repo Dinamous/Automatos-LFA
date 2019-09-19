@@ -18,17 +18,17 @@ public class Automatos {
         AFD afd1 = new AFD();
         AFD afd2 = new AFD();
         AFD afnd = new AFD();
-        int operacao=0;
+        int op=0;
         ArrayList<String> fech = new ArrayList();
         
-        Ler_Arquivo(afd1,afd2,operacao);//função para ler arquivos.
-        Operacao(operacao,afd1,afd2);
+        op=Ler_Arquivo(afd1,afd2,op);//função para ler arquivos.
+        Operacao(op,afd1,afd2);
         
-        Fecho(afd1,afd2,fech);
+       // Fecho(afd1,afd2,fech);
         
     }
 
-    private static void Ler_Arquivo(AFD afd1,AFD afd2,int operacao) throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
+    private static int Ler_Arquivo(AFD afd1,AFD afd2,int operacao) throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
        
        FileReader arquivo = new FileReader("C:\\Users\\Matheus\\Automatos\\entrada.dat");
        BufferedReader leitor = new BufferedReader(arquivo);
@@ -150,7 +150,7 @@ public class Automatos {
            afd2.estFinal = aux;//recebe o array
            System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
            
-                 
+         return operacao;        
        }
    
     public static void Fecho(AFD afd1,AFD afd2,ArrayList<String> fech){
@@ -162,15 +162,22 @@ public class Automatos {
     }
     
     public static void Operacao(int operacao,AFD afd1,AFD afd2){
-        
+        System.out.println("Operação:   "+operacao);
         switch(operacao){
-            case 1:
+            case 1://União
+                System.out.println("União");
                 break;
-            case 2:
+                
+            case 2://Interseção
+                System.out.println("Interseção");
                 break;
-            case 3:
+                
+            case 3://Concatenação
+                System.out.println("Concatenação");
                 break;
-            case 4:
+                
+            case 4://Combinação (*)
+                System.out.println("Combinação");
                 break;    
                
         }
