@@ -22,7 +22,7 @@ public class Automatos {
         ArrayList<String> fech = new ArrayList();
         
         op=Ler_Arquivo(afd1,afd2,op);//função para ler arquivos.
-        Operacao(op,afd1,afd2);
+        Operacao(op,afd1,afd2,fech);
         
        // Fecho(afd1,afd2,fech);
         
@@ -153,19 +153,27 @@ public class Automatos {
          return operacao;        
        }
    
-    public static void Fecho(AFD afd1,AFD afd2,ArrayList<String> fech){
+    public static void Fecho(AFD afd1,AFD afd2,ArrayList<String> fech,int op){
         
-        fech.addAll(afd1.estados);
-        
+        if(op==1){//se for união
+            for(Transicao obj:afd1.transicao)  
+                System.out.println(obj.Est_Origem);  
+            
+            
+        }else if(op==2){//se for interseção
+            
+        }
+       
         
         
     }
     
-    public static void Operacao(int operacao,AFD afd1,AFD afd2){
+    public static void Operacao(int operacao,AFD afd1,AFD afd2,ArrayList fech){
         System.out.println("Operação:   "+operacao);
         switch(operacao){
             case 1://União
                 System.out.println("União");
+                Fecho(afd1,afd2,fech,operacao);
                 break;
                 
             case 2://Interseção
