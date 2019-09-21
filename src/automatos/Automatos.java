@@ -11,24 +11,27 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Automatos {
-     
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        AFD afd1 = new AFD();
-        AFD afd2 = new AFD();
-        AFD afnd = new AFD();
-        int op=0;
+    public AFD afnd = new AFD();
+    public AFD afd1 = new AFD();
+    public AFD afd2 = new AFD();
+    public int op=0;
+    
+    public void main(String[] args) throws FileNotFoundException, IOException {
+   
         ArrayList<String> fech = new ArrayList();
-        
-        op=Ler_Arquivo(afd1,afd2,op);//função para ler arquivos.
-        Operacao(op,afd1,afd2,fech);
+    
+        Ler_Arquivo();//função para ler arquivos.
+        Operacao();
         
        // Fecho(afd1,afd2,fech);
         
     }
 
-    private static int Ler_Arquivo(AFD afd1,AFD afd2,int operacao) throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
+    private void Ler_Arquivo() throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
        
        FileReader arquivo = new FileReader("C:\\Users\\Matheus\\Automatos\\entrada.dat");
        BufferedReader leitor = new BufferedReader(arquivo);
@@ -42,7 +45,7 @@ public class Automatos {
        
        while(!"$".equals(Linha)){//enquanto a leitura do automato não acabou
                     
-           operacao = Integer.parseInt(Linha);//lendo a primeria linha do arquivo - a operaçao
+           op = Integer.parseInt(Linha);//lendo a primeria linha do arquivo - a operaçao
            System.out.println("operação: "+operacao);
            Linha = leitor.readLine();
            
@@ -150,30 +153,50 @@ public class Automatos {
            afd2.estFinal = aux;//recebe o array
            System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
            
-         return operacao;        
+        
        }
    
-    public static void Fecho(AFD afd1,AFD afd2,ArrayList<String> fech,int op){
+    public  void Fecho(){
+   
         
         if(op==1){//se for união
-            for(Transicao obj:afd1.transicao)  
-                System.out.println(obj.Est_Origem);  
-            
+            for(String alfa:afd1.estFinal){//percorre os estados afd 1
+                for(String beta:afd2.estFinal){//percorre os estados afd 2
+                    if((alfa.equals(afd1.estInicial)||(beta.equals(afd2.estInicial)))){
+                        //se os estados iniciais são finais tbm
+                        //então qi se torna o primeiro estado
+                        afnd.estados.add("qi");
+                        afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
+                        afnd.estados.addAll(afd2.estados);//adicionando os estados de afd1
+                        
+                        //adicionando os dois alfabetos
+                        afnd.alfabeto.addAll(afd1.alfabeto);
+                        afnd.alfabeto.addAll(afd2.alfabeto);
+                        
+                        Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
+                        //Criando um set para remover todos os elementos repetidos
+                        afnd.alfabeto.clear();//apagar todos os elementos
+                        afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+                        
+                    }
+                }
+            }    
             
         }else if(op==2){//se for interseção
-            
+           
         }
-       
-        
-        
+
     }
     
-    public static void Operacao(int operacao,AFD afd1,AFD afd2,ArrayList fech){
-        System.out.println("Operação:   "+operacao);
-        switch(operacao){
+    public  void Operacao(){
+        System.out.println("Operação:   "+op);
+        
+        AFND();
+        
+        switch(op){
             case 1://União
                 System.out.println("União");
-                Fecho(afd1,afd2,fech,operacao);
+                Fecho();
                 break;
                 
             case 2://Interseção
@@ -192,4 +215,7 @@ public class Automatos {
         
     }
     
+    public static void AFND(){
+       
+    }
 }
