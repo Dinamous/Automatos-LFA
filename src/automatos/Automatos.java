@@ -46,7 +46,7 @@ public class Automatos {
        while(!"$".equals(Linha)){//enquanto a leitura do automato não acabou
                     
            op = Integer.parseInt(Linha);//lendo a primeria linha do arquivo - a operaçao
-           System.out.println("operação: "+operacao);
+           System.out.println("operação: "+op);
            Linha = leitor.readLine();
            
            //Estados
