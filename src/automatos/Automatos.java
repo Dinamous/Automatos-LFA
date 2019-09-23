@@ -156,53 +156,70 @@ public class Automatos {
    
     public static void Fecho(){
    
-        if(op==1){//se for união
-            for(String alfa:afd1.estFinal){//percorre os estados finais afd1
-                for(String beta:afd2.estFinal){//percorre os estados finais afd2
-                    if((alfa.equals(afd1.estInicial)||(beta.equals(afd2.estInicial)))){
-                        //se os estados iniciais são finais também
-                        //então qi se torna o primeiro estado
-                        afnd.estados.add("qi");
-                        afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
-                        afnd.estados.addAll(afd2.estados);//adicionando os estados de afd2
-                        
-                        //adicionando os dois alfabetos
-                        afnd.alfabeto.addAll(afd1.alfabeto);
-                        afnd.alfabeto.addAll(afd2.alfabeto);
-                        
-                        Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
-                        //HashSet é uma estrutura que não permite repetições
-                        //Criando um set para remover todos os elementos repetidos
-                        afnd.alfabeto.clear();//apagar todos os elementos 
-                        afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+        switch (op) {
+            case 1:
+                //se for união
+                for(String alfa:afd1.estFinal){//percorre os estados finais afd1
+                    for(String beta:afd2.estFinal){//percorre os estados finais afd2
+                        if((alfa.equals(afd1.estInicial)||(beta.equals(afd2.estInicial)))){
+                            //se os estados iniciais são finais também
+                            //então qi se torna o primeiro estado
+                            afnd.estados.add("qi");
+                            afnd.estInicial = "qi";//recebe o estado inicial qi
+                            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
+                            afnd.estados.addAll(afd2.estados);//adicionando os estados de afd2
+                            
+                            //adicionando os dois alfabetos
+                            afnd.alfabeto.addAll(afd1.alfabeto);
+                            afnd.alfabeto.addAll(afd2.alfabeto);
+                            
+                            Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
+                            //HashSet é uma estrutura que não permite repetições
+                            //Criando um set para remover todos os elementos repetidos
+                            afnd.alfabeto.clear();//apagar todos os elementos
+                            afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+                            
+                            
+                        }
                     }
-                }
-            }    
-            
-        }else if(op==2){//se for interseção
-            for(String alfa:afd1.estFinal){//percorre os estados afd 1
-                for(String beta:afd2.estFinal){//percorre os estados afd 2
-                    if((alfa.equals(afd1.estInicial)&&(beta.equals(afd2.estInicial)))){
-                        //se os estados iniciais são finais tbm
-                        //então qi se torna o primeiro estado
-                        afnd.estados.add("qi");
-                        afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
-                        afnd.estados.addAll(afd2.estados);//adicionando os estados de afd1
-                        
-                        //adicionando os dois alfabetos
-                        afnd.alfabeto.addAll(afd1.alfabeto);
-                        afnd.alfabeto.addAll(afd2.alfabeto);
-                        
-                        Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
-                        //Criando um set para remover todos os elementos repetidos
-                        afnd.alfabeto.clear();//apagar todos os elementos
-                        afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
-                        
+                }   break;
+            case 2:
+                //se for interseção
+                for(String alfa:afd1.estFinal){//percorre os estados afd 1
+                    for(String beta:afd2.estFinal){//percorre os estados afd 2
+                        if((alfa.equals(afd1.estInicial)&&(beta.equals(afd2.estInicial)))){
+                            //se os estados iniciais são finais tbm
+                            //então qi se torna o primeiro estado
+                            afnd.estados.add("qi");
+                            afnd.estInicial = "qi";//recebe o estado inicial qi
+                            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
+                            afnd.estados.addAll(afd2.estados);//adicionando os estados de afd1
+                            
+                            //adicionando os dois alfabetos
+                            afnd.alfabeto.addAll(afd1.alfabeto);
+                            afnd.alfabeto.addAll(afd2.alfabeto);
+                            
+                            Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
+                            //Criando um set para remover todos os elementos repetidos
+                            afnd.alfabeto.clear();//apagar todos os elementos
+                            afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+                            
+                            //Ja que existe um estado qi, deve-se criar as suas transições
+                            Transicao trans;
+                            afnd.alfabeto.forEach((n) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
+                                //TODO
+                                //for each para cada afd
+                                //verificar se existe um equivalente nas transições
+                                //se não existir, o destino é null
+                            });
+                            
+                            
+                        }
                     }
-                }
-            }
-        }else{//caso a operação seja outra 
-            
+                }   break;
+        //caso a operação seja outra
+            default:
+                break;            
         }
 
     }
@@ -235,6 +252,7 @@ public class Automatos {
     }
     
     public static void AFND(){
-       
+       Fecho();
     }
+
 }
