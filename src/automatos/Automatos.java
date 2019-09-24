@@ -152,7 +152,20 @@ public class Automatos {
             afd2.estFinal = aux;//recebe o array
             System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
         
+}
+    
+    public static String Correspondente_Tran(String simbolo,AFD afd){
+       
+        for(Transicao lista : afd.transicao){//percorrendo as transições do afnd
+            if((lista.Est_Origem.contains(afd.estInicial))&&(lista.Simbolo.equals(simbolo))){
+                //se o estado de origem for inicial, e possuir o simbolo
+                //então retorna o estado destino para o fecho
+                return lista.Est_Destino;
+            }
         }
+        // se não possui um equivalente na transição, logo a transição é nula    
+        return null;
+    }
    
     public static void Fecho(){
    
@@ -206,13 +219,15 @@ public class Automatos {
                             
                             //Ja que existe um estado qi, deve-se criar as suas transições
                             Transicao trans;
-                            afnd.alfabeto.forEach((n) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
-                                //TODO
-                                //for each para cada afd
-                                //verificar se existe um equivalente nas transições
-                                //se não existir, o destino é null
+                            afnd.alfabeto.forEach((simbolo) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
+                                Transicao transaux = new Transicao();
+                                transaux.Est_Origem = "qi";
+                                transaux.Simbolo = simbolo;
+                                transaux.Est_Destino = Correspondente_Tran(simbolo,afd1)+","+Correspondente_Tran(simbolo,afd1);
+                                afnd.transicao.add(transaux);
                             });
-                            
+                            afnd.transicao.addAll(afd1.transicao);
+                            afnd.transicao.addAll(afd2.transicao);
                             
                         }
                     }
