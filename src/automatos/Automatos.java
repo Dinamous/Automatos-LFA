@@ -162,6 +162,19 @@ public class Automatos {
         //se não possui um equivalente na transição, logo a transição é nula    
         return null;
     }
+    
+    public static String Correspondente_TranFinal(String simbolo,AFD afd){
+       
+        for(Transicao lista : afd.transicao){//percorrendo as transições do afnd
+            if((lista.Est_Origem.contains(afd.estInicial))&&(lista.Simbolo.equals(simbolo))){
+                //se o estado de origem for inicial, e possuir o simbolo ">"
+                //então retorna o estado destino para o fecho
+                return lista.Est_Destino;
+            }
+        }
+        //se não possui um equivalente na transição, logo a transição é nula    
+        return null;
+    }
    
     public static void Intersecao(){
                 for(String alfa:afd1.estFinal){//percorre os estados afd 1
@@ -239,6 +252,37 @@ public class Automatos {
                 }
     }
     
+    public static void Concatenacao(){
+        //Afnd receberá o estado incial do afd1 
+        afnd.estInicial = afd1.estInicial;
+        
+        afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
+        afnd.estados.addAll(afd2.estados);//adicionando os estados de afd2
+        
+        //adicionando os dois alfabetos
+        afnd.alfabeto.addAll(afd1.alfabeto);
+        afnd.alfabeto.addAll(afd2.alfabeto);
+
+        Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
+        //HashSet é uma estrutura que não permite repetições
+        //Criando um set para remover todos os elementos repetidos
+        afnd.alfabeto.clear();//apagar todos os elementos
+        afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+
+        afnd.alfabeto.forEach((simbolo) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
+            Transicao transaux = new Transicao();
+            afnd.estFinal.forEach((estt) ->{
+                transaux.Est_Origem = afd1.estInicial;
+                transaux.Simbolo = simbolo;
+                transaux.Est_Destino = Correspondente_Tran(simbolo,afd1)+Correspondente_TranFinal(simbolo,afd2);
+                afnd.transicao.add(transaux);
+            });
+            
+          
+        });
+        afnd.transicao.addAll(afd1.transicao);
+        afnd.transicao.addAll(afd2.transicao);
+    }
     
     public  static void Operacao(){
         System.out.println("Operação:   "+op);        
@@ -255,6 +299,7 @@ public class Automatos {
                 
             case 3://Concatenação
                 System.out.println("Concatenação");
+                Concatenacao();
                 break;
                 
             case 4://Combinação (*)
