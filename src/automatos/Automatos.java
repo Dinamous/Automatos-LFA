@@ -18,7 +18,11 @@ public class Automatos {
     public static void main(String[] args) throws FileNotFoundException, IOException {
    
         Ler_Arquivo();//função para ler arquivos.
-        Operacao();
+        //Operacao();
+        //Uniao();
+        //Intersecao();
+        //Concatenacao();
+        Combinacao();
         Printar_Afnd();
          
     }
@@ -53,10 +57,20 @@ public class Automatos {
             Linha = leitor.readLine();//ler a próxima linha 
                   
             //Alfabeto
-            vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os elementos do alfabeto
-            aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-            afd1.alfabeto.addAll(aux);//recebe o array
-            System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));//printa os itens do alfabeto
+            vetor_de_item = null;
+            
+            if(Linha.contains(",")){
+                vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os elementos do alfabeto
+                afd1.alfabeto.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
+                System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));//printa os itens do alfabeto
+            }
+            else{
+                afd1.alfabeto.add(Linha);
+                System.out.println("Alfabeto: "+Linha);
+            }
+            
+            
+            
             Linha = leitor.readLine();//ler a próxima linha 
           
             System.out.println("Transições:");
@@ -64,18 +78,17 @@ public class Automatos {
             while(!Linha.contains(">")){
                 //q0,0,q1
                 vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os estados
-               
-                for(String item : vetor_de_item){
+                    auxx = null;
                     auxx = new Transicao();//gerando novo endereço de memoria
+                    
                     auxx.Est_Origem = vetor_de_item[0];
                     auxx.Simbolo = vetor_de_item[1]; //simbolo = alfabeto
                     auxx.Est_Destino = vetor_de_item[2];
                     //Exemplo: |q0|0|q1|
-                    aux_trans.add(auxx);
-                }
-               
+                    afd1.transicao.add(auxx);
+                           
                 System.out.println("\t"+auxx.Est_Origem+","+auxx.Simbolo+","+auxx.Est_Destino);
-                afd1.transicao.addAll(aux_trans);
+                
                 Linha = leitor.readLine();
             }
            
@@ -86,11 +99,13 @@ public class Automatos {
             Linha = leitor.readLine();
            
             //Estado Final
+            est=null;
+            vetor_de_item = null;
             est = Linha.replace("*", "");//removendo o sinal de *
             vetor_de_item = est.split(",");
-            aux.addAll(Arrays.asList(vetor_de_item));
-            afd1.estFinal.addAll(aux);//recebe o array
-            System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
+            afd1.estFinal.addAll(Arrays.asList(vetor_de_item));
+            System.out.println("Estado final: "+Arrays.toString(vetor_de_item));
+            
             Linha = leitor.readLine();
            
            
@@ -111,29 +126,34 @@ public class Automatos {
             Linha = leitor.readLine();//ler a próxima linha 
                   
             //Alfabeto
-            vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
-            aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
-            afd2.alfabeto.addAll(aux);//recebe o array
-            System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));//printa o alfabeto
-            Linha = leitor.readLine();//ler a próxima linha 
+            vetor_de_item = null;
+            if(Linha.contains(",")){
+                vetor_de_item = Linha.split(",");//quebrando a linha em subvetores para pegar os elementos do alfabeto
+                aux.addAll(Arrays.asList(vetor_de_item)); //pelo tamanho de elementos adiciona em uma ARRAY auxilair
+                afd2.alfabeto.addAll(aux);//recebe o array
+                System.out.println("Alfabeto: "+Arrays.toString(vetor_de_item));//printa os itens do alfabeto
+            }
+            else{
+                afd2.alfabeto.add(Linha);
+                System.out.println("Alfabeto: "+Linha);
+            }
           
+            Linha = leitor.readLine();//ler a próxima linha
             System.out.println("Estados:");
-           
+            //vetor_de_item = null;
             while(!Linha.contains(">")){
                 //q0,0,q1
                 vetor_de_item = Linha.split(",");//quebrando a linha em subvetores
                
-                for(String item : vetor_de_item){
                     auxx = new Transicao();//gerando novo endereço de memoria
                     auxx.Est_Origem = vetor_de_item[0];
                     auxx.Simbolo = vetor_de_item[1]; //simbolo = alfabeto
                     auxx.Est_Destino = vetor_de_item[2];
                     //Exemplo: |q0|0|q1|
-                    aux_trans.add(auxx);
-                 }
-               
+                    afd2.transicao.add(auxx);
+                               
                 System.out.println("\t"+auxx.Est_Origem+","+auxx.Simbolo+","+auxx.Est_Destino);
-                afd2.transicao.addAll(aux_trans);
+               
                 Linha = leitor.readLine();
             }
            
@@ -144,10 +164,12 @@ public class Automatos {
             Linha = leitor.readLine();
            
             //Estado Final
+            aux.clear();
+            vetor_de_item = null;
+            est=null;
             est = Linha.replace("*", "");//removendo o sinal de *
             vetor_de_item = est.split(",");
-            aux.addAll(Arrays.asList(vetor_de_item));
-            afd2.estFinal.addAll(aux);//recebe o array
+            afd2.estFinal.addAll(Arrays.asList(vetor_de_item));
             System.out.println("Estado final: : "+Arrays.toString(vetor_de_item));
         
 }
@@ -179,59 +201,18 @@ public class Automatos {
     }
    
     public static void Intersecao(){
-                for(String alfa:afd1.estFinal){//percorre os estados afd 1
-                    for(String beta:afd2.estFinal){//percorre os estados afd 2
-                        if((alfa.equals(afd1.estInicial)&&(beta.equals(afd2.estInicial)))){
-                            //se os estados iniciais são finais tbm
-                            //então qi se torna o primeiro estado
-                            afnd.estados.add("qi");
-                            afnd.estInicial = "qi";//recebe o estado inicial qi
-                            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
-                            afnd.estados.addAll(afd2.estados);//adicionando os estados de afd1
-                            
-                            //adicionando os dois alfabetos
-                            afnd.alfabeto.addAll(afd1.alfabeto);
-                            afnd.alfabeto.addAll(afd2.alfabeto);
-                            
-                            Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
-                            //Criando um set para remover todos os elementos repetidos
-                            afnd.alfabeto.clear();//apagar todos os elementos
-                            afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
-                            
-                            //Ja que existe um estado qi, deve-se criar as suas transições
-                            Transicao trans;
-                            afnd.alfabeto.forEach((simbolo) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
-                                Transicao transaux = new Transicao();
-                                transaux.Est_Origem = "qi";
-                                transaux.Simbolo = simbolo;
-                                transaux.Est_Destino = Correspondente_Tran(simbolo,afd1)+Correspondente_Tran(simbolo,afd2);
-                                afnd.transicao.add(transaux);
-                            });
-                            afnd.transicao.addAll(afd1.transicao);
-                            afnd.transicao.addAll(afd2.transicao);
-                           
-                            break;
-                        }
-                    }
-                }
-    }
-    
-    public static int Uniao(){
-        //===== Criando o fecho para o conjunto de estados, possivel qi====
-        if((afd1.estFinal.contains(afd1.estInicial)||(afd2.estFinal.contains(afd2.estInicial)))){
-            //se os estados iniciais são finais também
+                //===== Criando o fecho para o conjunto de estados, possivel qi====
+        if((afd1.estFinal.contains(afd1.estInicial)&&(afd2.estFinal.contains(afd2.estInicial)))){
+            afnd.estFinal.add("qi");
+            //caso ambos os afds possuam estados iniciais e finais
+            //qi se torna final
+        }
+        
+        //se os estados iniciais são finais também
             //então qi se torna o primeiro estado
             afnd.estados.add("qi");
             afnd.estInicial = "qi";//recebe o estado inicial qi
-            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1
-            System.out.println("\n Estados:");
-          for(String n : afd1.estados){
-		System.out.print("*"+n + " ");
-          }
-          for(String n : afd2.estados){
-		System.out.print("%"+n + " ");
-          }
-                      
+            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1     
             afnd.estados.addAll(afd2.estados);//adicionando os estados de afd2
 
             //adicionando os dois alfabetos
@@ -250,14 +231,67 @@ public class Automatos {
                 transaux.Est_Origem = "qi";
                 transaux.Simbolo = simbolo;
                 transaux.Est_Destino = Correspondente_Tran(simbolo,afd1)+Correspondente_Tran(simbolo,afd2);
+                afnd.estados.add(transaux.Est_Destino);//adicionando o novo estado que surgiu
                 afnd.transicao.add(transaux);
+                
             });
+            System.out.println("\n Transição:");
+          
+            //Adicionando as demais transições
             afnd.transicao.addAll(afd1.transicao);
             afnd.transicao.addAll(afd2.transicao);
-
+            
+            //Adicionando os demais estados finais 
+            afnd.estFinal.addAll(afd1.estFinal);
+            afnd.estFinal.addAll(afd2.estFinal);
+    }
+    
+    public static void Uniao(){
+        //TODO
+        //===== Criando o fecho para o conjunto de estados, possivel qi====
+        if((afd1.estFinal.contains(afd1.estInicial)||(afd2.estFinal.contains(afd2.estInicial)))){
+           afnd.estFinal.add("qi");
+           //se pelo menos um dos afd possuir um estado inicial também final
+           //qi se torna final
         }
+        
+         //se os estados iniciais são finais também
+            //então qi se torna o primeiro estado
+            afnd.estados.add("qi");
+            afnd.estInicial = "qi";//recebe o estado inicial qi
+            afnd.estados.addAll(afd1.estados);//adicionando os estados de afd1     
+            afnd.estados.addAll(afd2.estados);//adicionando os estados de afd2
+
+            //adicionando os dois alfabetos
+            afnd.alfabeto.addAll(afd1.alfabeto);
+            afnd.alfabeto.addAll(afd2.alfabeto);
+
+            Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
+            //HashSet é uma estrutura que não permite repetições
+            //Criando um set para remover todos os elementos repetidos
+            afnd.alfabeto.clear();//apagar todos os elementos
+            afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
+
+            //Já que existe um estado qi, deve-se criar as suas transições
+            afnd.alfabeto.forEach((simbolo) -> {//para cada elemento do alfabeto, existe uma transição do estado qi
+                Transicao transaux = new Transicao();
+                transaux.Est_Origem = "qi";
+                transaux.Simbolo = simbolo;
+                transaux.Est_Destino = Correspondente_Tran(simbolo,afd1)+Correspondente_Tran(simbolo,afd2);
+                afnd.estados.add(transaux.Est_Destino);//adicionando o novo estado que surgiu
+                afnd.transicao.add(transaux);
+            });
+            System.out.println("\n Transição:");
+          
+            //Adicionando as demais transições
+            afnd.transicao.addAll(afd1.transicao);
+            afnd.transicao.addAll(afd2.transicao);
+            
+            //Adicionando os demais estados finais 
+            afnd.estFinal.addAll(afd1.estFinal);
+            afnd.estFinal.addAll(afd2.estFinal);
                     
-         return 0;
+       
     }
     
     public static void Concatenacao(){
@@ -270,13 +304,25 @@ public class Automatos {
         //adicionando os dois alfabetos
         afnd.alfabeto.addAll(afd1.alfabeto);
         afnd.alfabeto.addAll(afd2.alfabeto);
-
+        
         Set<String> alfbabeto_sem_repeticao = new HashSet<>(afnd.alfabeto);
         //HashSet é uma estrutura que não permite repetições
         //Criando um set para remover todos os elementos repetidos
         afnd.alfabeto.clear();//apagar todos os elementos
         afnd.alfabeto.addAll(alfbabeto_sem_repeticao);//atualizando o alfabeto sem elementos repetidos
-
+           System.out.println("tamanho:"+ afd1.alfabeto.size());
+        //Criando a transição lambda para qi
+        afnd.alfabeto.forEach((simbolo) ->{
+            Transicao trax = new Transicao();
+                trax.Est_Origem = afd1.estInicial;// o estado de eorigem é o estado final atual
+                trax.Simbolo = simbolo;
+                trax.Est_Destino = Correspondente_Tran(simbolo,afd1)+Correspondente_Tran(simbolo,afd2);
+                afnd.transicao.add(trax);
+                afnd.estados.add(trax.Est_Destino);
+                System.out.println("aaaaaaa");
+            });        
+        
+        
         //adicionando as transições do afd1 eexceto as finais 
         ArrayList<String> finais = afd1.estFinal;
         for(Transicao lista : afd1.transicao){
@@ -289,64 +335,55 @@ public class Automatos {
             }
         }
         
-        afnd.alfabeto.forEach((simbolo) -> {//para cada elemento do alfabeto, existe uma transição do estado qn
-            Transicao transaux = new Transicao();
-            afd1.estFinal.forEach((estt) ->{
-                transaux.Est_Origem = estt;// o estado de eorigem é o estado final atual
-                transaux.Simbolo = simbolo;
-                transaux.Est_Destino = Lambda(estt,simbolo,afd1)+Lambda(estt,simbolo,afd2);
-                afnd.transicao.add(transaux);
-            });
-        
-        });
-            
-        // Adicionando as transições do afd2    
+         
+        // Adicionando as transições do afd2       
         afnd.transicao.addAll(afd2.transicao);
-           
+        
+        //Adicionando os estados finais de afd2
+        afnd.estFinal.addAll(afd2.estFinal);
     }
     
-     public  static void Combinacao(){//estrela brilha brilha
+    public static void Combinacao(){//estrela brilha brilha
         //Criando o estado inicial
-         afnd.estInicial = "qi";
+        afnd.estInicial = "qi";
          
-         //Criando os estados do afnd
-         afnd.estados.add("qi");//a operação estrela possuí um estado qi
-         afnd.estados.addAll(afd1.estados);//adicionando os demais estados do afd
+        //Criando os estados do afnd
+        afnd.estados.add("qi");//a operação estrela possui um estado qi
+        afnd.estados.addAll(afd1.estados);//adicionando os demais estados do afd
          
-         //Adicionando os estados finais
-         afnd.estFinal = afd1.estFinal;
+        //Adicionando os estados finais
+        afnd.estFinal = afd1.estFinal;
          
-         //Adicionando o alfabeto
-         afnd.alfabeto = afd1.alfabeto;
+        //Adicionando o alfabeto
+        afnd.alfabeto = afd1.alfabeto;
          
-         //Adicionando a Transição lambda
-         // qi, a, ....
-         // qi, b, ....
-         // qi, c, ....
-         afnd.alfabeto.forEach((simbolo)->{
-             Transicao trans = new Transicao();
-             trans.Est_Origem = "qi";//estado inicial do afnd
-             trans.Simbolo = simbolo;
-             trans.Est_Destino = afd1.estInicial;// antigo q0 do afd
-             afnd.transicao.add(trans);//guardando na struct
-         });
+        //Adicionando a Transição lambda
+        // qi, a, ....
+        // qi, b, ....
+        // qi, c, ....
+        afnd.alfabeto.forEach((simbolo)->{
+            Transicao trans = new Transicao();
+            trans.Est_Origem = "qi";//estado inicial do afnd
+            trans.Simbolo = simbolo;
+            trans.Est_Destino = afd1.estInicial + Correspondente_Tran(simbolo,afd1) ;// antigo q0 do afd
+            afnd.transicao.add(trans);//guardando na struct
+        });
          
-         //Adicionando as demais transições do afd
-         afnd.transicao.addAll(afd1.transicao);
+        //Adicionando as demais transições do afd
+        afnd.transicao.addAll(afd1.transicao);
          
-         //Adiconando a Transição Lambda dos finais para o inicial
-         afnd.alfabeto.forEach((simbolo)->{
+        //Adicionando a Transição Lambda dos finais para o inicial
+        afnd.alfabeto.forEach((simbolo)->{
             afnd.estFinal.forEach((finais)->{
-                //TODO qo quando final = incial, precisa de transição?
+                //TODO q0 quando final = incial, precisa de transição?
                 Transicao trans = new Transicao();
                 trans.Est_Origem = finais;//estado inicial do afnd
                 trans.Simbolo = simbolo;
                 trans.Est_Destino = afd1.estInicial;// antigo q0 do afd
                 afnd.transicao.add(trans);
             });
-         });
-         
-     }
+        });    
+    }
     
     public  static void Operacao(){
         System.out.println("Operação:   "+op);        
@@ -379,23 +416,23 @@ public class Automatos {
           System.out.println("---------------------------------------------");
           System.out.println("\n\tAFND");
           
-          System.out.println("\n Estados:");
+          System.out.println("\n Estados:\n\t");
           for(String n : afnd.estados){
 		System.out.print(n + " ");
           }
           
-          System.out.println("\n Alfabeto:");
+          System.out.println("\n Alfabeto:\t");
           for(String n : afnd.alfabeto){
 		System.out.print(n+" ");
           }
           
-          System.out.println("\n Estados:");
+          System.out.println("\n Transição:");
           for(Transicao n : afnd.transicao){
-		System.out.println(n.Est_Origem+","+n.Simbolo+","+n.Est_Destino);
+		System.out.println("\t"+n.Est_Origem+","+n.Simbolo+","+n.Est_Destino);
           }
           
           System.out.println("Estado incial: "+ afnd.estInicial);
-          System.out.println("\n Estado final: ");
+          System.out.println("\n Estado final:\t");
           for(String n : afnd.estFinal){
 		System.out.print(n +" ");
           }
