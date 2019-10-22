@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Automatos {
@@ -19,14 +20,15 @@ public class Automatos {
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
         Ler_Arquivo();//função para ler arquivos.
-        //Operacao();
+        Operacao();
+        //Transicoes_afnd();
         
         //Uniao();
-        Intersecao();
+        //Intersecao();
         //Concatenacao();
         //Combinacao();
         Printar_Afnd();
-
+        TransicaoNovosEstados();
     }
 
     private static void Ler_Arquivo() throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
@@ -381,6 +383,8 @@ public class Automatos {
     }
 
     public static void Operacao() {
+        
+        Transicao_Vazia();
         System.out.println("Operação:   " + op);
         switch (op) {
             case 1://União
@@ -404,7 +408,22 @@ public class Automatos {
                 break;
 
         }
+        
 
+    }
+    
+    public static void Transicao_Vazia(){
+        
+        //Adicionando transições vazias para casa simbolo do alfabeto
+        afnd.alfabeto.forEach((simbolo)->{
+            Transicao trans = new Transicao();
+            trans.Est_Origem=null;
+            trans.Simbolo= simbolo;
+            trans.Est_Destino=null;
+            
+            afnd.transicao.add(trans);
+        });
+        
     }
 
     public static void Printar_Afnd() {
@@ -440,75 +459,105 @@ public class Automatos {
         //ex: q2,q4
         String ultimoEstadoObtido = afnd.estados.get(afnd.estados.size()-1);
         String estDest = null;
-        ArrayList<String> PossiveisEstados = null;
+        ArrayList<String> PossiveisEstados = new ArrayList();
+        ArrayList<String> EstadosComponentes = new ArrayList();
+        String[] UEO_subEstados;
         
-        PossiveisEstados.add(ultimoEstadoObtido);
+        
         //Enquanto houver um estado novo do qual não foi adicionado ao afnd ainda
         //reealiza as operações devidas:
         //1:procura por estado que o compoem 
         //2:adicionar suas devidas transições
         //3: adicionar eventuais estados novos descobertos a mesma operação
-        
         //Para cada estado novo encontrado
         //Encontrar sua transição equivalente
-        for(String Estado : PossiveisEstados){
+        for (String Estado : PossiveisEstados) {
             Transicao novaTransicao = new Transicao();
-            
-            
-            String [] UEO_subEstados = Estado.split(".");
+            System.out.println("EstadoNovo: "+Estado);
+            System.out.println("posiçao"+Estado.indexOf("."));
+            UEO_subEstados = Estado.split(".");
+            EstadosComponentes.addAll(Arrays.asList(UEO_subEstados));
+            for (String n : EstadosComponentes) {
+                System.out.print("["+n+"] ");
+            }
             //UEO_subEstados = estados que compoem o ultimo estado encontrado
-
             //Percorrendo para cada elemento do alfabeto
             for(String simbolo : afnd.alfabeto){
+                System.out.println("Simbolo:"+simbolo);
                 //Percorrendo para cada elemento que compoz o estado gerado
                 for(String subEstados : UEO_subEstados){
+                    System.out.println("Subestado: "+subEstados);
                     //Percorrendo todo a transição 
-                    for(Transicao trans : afnd.transicao){
-                        //Buscando uma transição que satisfaça os subestados (se existirem)
-                        if((trans.Est_Origem.equals(subEstados))&&(trans.Simbolo.equals(simbolo))){
-                            estDest += trans.Est_Destino+".";
-                        }                          
-                    }
-
+                    
+                    estDest += Lambda(subEstados,simbolo,afd1)+"."+Lambda(subEstados,simbolo,afd2);
+                    
                 }//fim do loop dos subEstados
                 
-               
+                
                 
                 //Adicionando a transição pros estados novos encontrados
                 //se o estado encontrado já existe, ignora, senão 
                 if(!afnd.estados.contains(estDest)){
-                   novaTransicao.Est_Origem = ultimoEstadoObtido;
-                   novaTransicao.Simbolo = simbolo;
-                   novaTransicao.Est_Destino = estDest;
-                   
-                   afnd.estados.add(estDest);//adicionando o novo estado q surgiu ao afnd
-                   PossiveisEstados.add(estDest);
-                   //isso garante q caso surja novos estados em cada simbolo num mesmo estado
-                   //para q fiquem em fila para serem adicionados
-                   /*
-                   
-                   Ex:
-                   Estados |  0  |  1  | 2
-                   ...
-                   q3      | q1  | q3 | q2q3
-                   q2q3    | q1q2|q3q1| q3
-                   
-                   **Logo  os estados q1q2  q3q1 seram clocados na pilha para serem adicionados
-                   */
-                   
-                   estDest = null;//zerando a variavel para o proximo loop
+                    novaTransicao.Est_Origem = ultimoEstadoObtido;
+                    novaTransicao.Simbolo = simbolo;
+                    novaTransicao.Est_Destino = estDest;
+                    
+                    afnd.estados.add(estDest);//adicionando o novo estado q surgiu ao afnd
+                    PossiveisEstados.add(estDest);
+                    //isso garante q caso surja novos estados em cada simbolo num mesmo estado
+                    //para q fiquem em fila para serem adicionados
+                    /*
+                    
+                    Ex:
+                    Estados |  0  |  1  | 2
+                    ...
+                    q3      | q1  | q3 | q2q3
+                    q2q3    | q1q2|q3q1| q3
+                    
+                    **Logo  os estados q1q2  q3q1 seram clocados na pilha para serem adicionados
+                    */
+                    
+                    estDest = null;//zerando a variavel para o proximo loop
                 }
                 
             }//fim do loop do alfabeto
-            
-        }
+        } 
         
-        
+         
         
         
     }
     
-    
+  public static void TransicaoNovosEstados(){
+      System.out.println("\n===========================================================");
+      //Pegando o ultimo estado adicionado no afnd
+      //Ex: q2.q4
+      String UltimoEstadoEncontrado = afnd.estados.get(afnd.estados.size()-1);
+      ArrayList<String> FilaDeEstados = new ArrayList();
+      
+      FilaDeEstados.add(UltimoEstadoEncontrado);
+      ArrayList<String> EstadoComponente = new ArrayList();
+      
+      for(String Estado : FilaDeEstados){
+          System.out.println("Estado Encontrado: "+Estado);
+          
+          //Encontrado os estados que compoem o estado encontrado
+          //Ex q2q4 => [q2] e [q4]
+          for(String estado_afnd: afnd.estados){
+              //
+              if(Estado.contains(estado_afnd) && !estado_afnd.contains(".")){
+                  EstadoComponente.add(estado_afnd);
+              }
+          }
+          
+          System.out.println(EstadoComponente);
+          
+          
+          
+      }
+      
+      
+  }
     
     
 
