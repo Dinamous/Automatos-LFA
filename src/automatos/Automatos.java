@@ -27,8 +27,9 @@ public class Automatos {
         //Intersecao();
         //Concatenacao();
         //Combinacao();
-        Printar_Afnd();
         TransicaoNovosEstados();
+        Printar_Afnd();
+        
     }
 
     private static void Ler_Arquivo() throws FileNotFoundException, IOException {// caso não exista o arquivo, função não executa
@@ -534,27 +535,64 @@ public class Automatos {
       //Ex: q2.q4
       String UltimoEstadoEncontrado = afnd.estados.get(afnd.estados.size()-1);
       ArrayList<String> FilaDeEstados = new ArrayList();
-      
+      ArrayList<String> auxiliar = new ArrayList();
       FilaDeEstados.add(UltimoEstadoEncontrado);
       ArrayList<String> EstadoComponente = new ArrayList();
-      
-      for(String Estado : FilaDeEstados){
-          System.out.println("Estado Encontrado: "+Estado);
-          
-          //Encontrado os estados que compoem o estado encontrado
-          //Ex q2q4 => [q2] e [q4]
-          for(String estado_afnd: afnd.estados){
-              //
-              if(Estado.contains(estado_afnd) && !estado_afnd.contains(".")){
-                  EstadoComponente.add(estado_afnd);
-              }
-          }
-          
-          System.out.println(EstadoComponente);
-          
+      boolean continua=true;
+     
+      while(continua){
+          for(String Estado : FilaDeEstados){
+            System.out.println("\n\nEstado Encontrado: "+Estado);
+
+            //Encontrado os estados que compoem o estado encontrado
+            //Ex q2q4 => [q2] e [q4]
+            EstadoComponente.clear();
+            for(String estado_afnd: afnd.estados){
+                //Buscando os estados que os contain, execeto as que ja são compostas
+                if(Estado.contains(estado_afnd) && !estado_afnd.contains(".")){
+                    EstadoComponente.add(estado_afnd);
+                }
+            }
+
+            System.out.println(EstadoComponente);
+            //Para cada estado procurar o correspondente
+            for(String simbolo : afnd.alfabeto){
+                Transicao trans = new Transicao();
+                String EstDest = "";
+                
+                trans.Est_Origem = Estado;
+                for(String SubEstado: EstadoComponente){
+                    EstDest += Lambda(SubEstado,simbolo,afnd) +".";
+
+                    
+                }
+                trans.Simbolo=simbolo;
+                trans.Est_Destino = EstDest;
+                
+                //Se o estado encontrado
+                if(!afnd.estados.contains(EstDest)){
+                    afnd.transicao.add(trans);
+                    afnd.estados.add(trans.Est_Destino);
+                    //Adiconando o novo estado encontrado a fila
+                    //para que possa ser encontrado seus correspondentes
+                    auxiliar.add(trans.Est_Destino);
+                    //continua=false;
+                    System.out.println("Estado novo: "+EstDest);
+
+                }else{
+                    continua = false;
+                    auxiliar.clear();
+                }
+            }
           
           
       }
+          FilaDeEstados.clear();
+          FilaDeEstados.addAll(auxiliar);
+          auxiliar.clear();
+          
+          
+    }
       
       
   }
